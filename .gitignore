@@ -1,1 +1,8 @@
 dataset/
+.ipynb_checkpoints/
+documentation/document_ci4.aux
+documentation/document_ci4.log
+documentation/document_ci4.out
+documentation/document_ci4.synctex.gz
+documentation/assets/
+documentation/fonts/
