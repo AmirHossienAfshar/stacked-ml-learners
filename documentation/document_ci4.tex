@@ -1,0 +1,287 @@
+\documentclass[a4paper,12pt]{article}
+\usepackage{fullpage}
+\usepackage{amsmath,amsthm,amsfonts,amssymb,amscd}
+\usepackage{xcolor}
+\usepackage{graphicx}
+\usepackage{adjustbox}
+\usepackage{geometry}
+\usepackage{caption}
+\usepackage{xepersian}
+\usepackage{multicol}
+\usepackage{listings}
+\usepackage{color}
+\usepackage{hyperref}
+\usepackage{bidi} 
+\usepackage{enumitem}
+
+% Colors
+\definecolor{titlepagecolor}{cmyk}{0.75,0.68,0.67,0.90} % Cover background
+\definecolor{CustomAccent}{HTML}{2BAB8C} % Accent color for English text
+%\definecolor{CustomBackground}{HTML}{1C1C1C} % Background for content pages
+\definecolor{CustomBackground}{cmyk}{0.75,0.68,0.67,0.90}% Background for content pages
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\definecolor{codebg}{cmyk}{0.75,0.68,0.67,0.90} % same as CustomBackground
+\definecolor{accent}{HTML}{2BAB8C} % same as CustomAccent
+\definecolor{codegray}{rgb}{0.8,0.8,0.8}
+\definecolor{codegreen}{rgb}{0.4,1,0.4}
+\definecolor{codepurple}{rgb}{1,0.6,1}
+\definecolor{keywordcolor}{rgb}{1,0.3,0.6}
+
+\lstdefinestyle{darkstyle}{
+	backgroundcolor=\color{codebg},   
+	commentstyle=\color{codegreen},
+	keywordstyle=\color{keywordcolor},
+	numberstyle=\tiny\color{codegray},
+	stringstyle=\color{codepurple},
+	basicstyle=\ttfamily\footnotesize\color{white},
+	breakatwhitespace=false,         
+	breaklines=true,                 
+	captionpos=b,                    
+	keepspaces=true,                 
+	numbers=left,                    
+	numbersep=10pt,                  
+	showspaces=false,                
+	showstringspaces=false,
+	showtabs=false,                  
+	tabsize=4,
+	frame=single,
+	rulecolor=\color{accent}
+}
+
+\lstset{style=darkstyle}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+
+
+
+
+
+% Persian and Latin fonts
+\settextfont{Vazir.ttf}[BoldFont = Vazir-Bold.ttf, Path = fonts/]
+\setlatintextfont{Times New Roman}
+
+% Line spacing
+\renewcommand{\baselinestretch}{1.2}
+\renewcommand{\thesection}{\arabic{section})}
+
+\color{white}
+
+
+% Homework number
+\newcommand{\HomeworkNumber}{1}
+
+% Cover-only settings
+\pagenumbering{gobble}
+
+% ---------- COVER PAGE ----------
+\begin{document}
+	\begin{latin}
+		\begin{titlepage}
+			\newgeometry{top=1in,bottom=1in,right=0in,left=0in}
+			\thispagestyle{empty}
+			\pagecolor{titlepagecolor}
+			\color{white}
+			\begin{center}
+				\vspace*{\stretch{1}}
+				
+				{\fontsize{48}{0}\bfseries\selectfont \color{CustomAccent} COMPUTATIONAL INTELLIGENCE}
+				
+				\vskip 1.5\baselineskip
+				{\fontsize{24}{0}\selectfont PROJECT 4 DOCUMENTATION}
+				
+				\vspace*{\stretch{2}}
+				\adjincludegraphics[width=1\paperwidth]{assets/cover2.png}
+				
+				\vspace*{\stretch{2}}
+				{\fontsize{20}{0}\selectfont \color{CustomAccent}
+					Ferdowsi University of Mashhad \\
+					Department of Computer Engineering
+				}
+				
+				\vskip 1.5\baselineskip
+				{\Large SPRING 2025}
+				
+				\vspace*{\stretch{1}}
+			\end{center}
+		\end{titlepage}
+	\end{latin}
+	
+	% ---------- RESET PAGE SETTINGS ----------
+	\clearpage
+	\nopagecolor
+	\pagecolor{CustomBackground}
+	\color{white}
+	\newgeometry{top=1in,bottom=1in,left=1in,right=1in}
+	\pagenumbering{arabic}
+	
+	% ---------- HEADER (PERSIAN) ----------
+	\hrule \medskip
+	\begin{minipage}{0.295\textwidth}
+		\raggedleft \color{CustomAccent}
+		مبانی هوش محاسباتی\\
+		دانشگاه فردوسی مشهد\\
+		گروه مهندسی کامپیوتر
+	\end{minipage}
+	\begin{minipage}{0.4\textwidth}
+		\centering 
+		\includegraphics[scale=0.3]{assets/fum-logo.png}
+	\end{minipage}
+	\begin{minipage}{0.295\textwidth} \color{CustomAccent}
+		داکیومنت پروژه 4 \\
+		دکتر فضل ارثی \\
+		بهار 1404
+	\end{minipage}
+	\medskip\hrule
+	\bigskip	
+	
+	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+	
+	\begin{table}[h]
+		\centering
+		\begin{tabular}{|l|l|}
+			\hline
+			\textbf{نام و نام خانوادگی} & \textbf{شماره دانشجویی} \\
+			\hline
+			امیرحسین افشار & 4012262196 \\
+			\hline
+						علیرضا صفار & 4011262281 \\
+			\hline
+		\end{tabular}
+	\end{table}
+	
+
+%	\begin{figure}[h]
+	%		\centering
+	%		\includegraphics[scale=0.35]{assets/template.png}
+	%		\caption*{\textcolor{CustomAccent}{k-means}}
+	%	\end{figure}
+
+	
+\section{فاز اول: استخراج ویژگی ها از مدل resnet18}
+
+در ابتدا یک بررسی بر روی مدل resnet18 که با استفاده از pytorch پیاده سازی شده، انجام می دهیم:
+
+
+	
+\begin{table}[h]
+	\centering
+	\begin{latin}
+	\begin{tabular}{|l|c|c|c|}
+		\hline
+		\textbf{Layer} & \textbf{\#Channels} & \textbf{Width} & \textbf{Height} \\
+		\hline
+		conv1 & 64 & 112 & 112 \\
+		\hline
+		bn1 & 64 & 112 & 112 \\
+		\hline
+		relu & 64 & 112 & 112 \\
+		\hline
+		maxpool & 64 & 56 & 56 \\
+		\hline
+		layer1 & 64 & 56 & 56 \\
+		\hline
+		layer2 & 128 & 28 & 28 \\
+		\hline
+		layer3 & 256 & 14 & 14 \\
+		\hline
+		layer4 & 512 & 7 & 7 \\
+		\hline
+		avgpool & 512 & 1 & 1 \\
+		\hline
+		fc & \multicolumn{3}{c|}{1000} \\
+		\hline
+	\end{tabular}
+	\end{latin}	
+	\caption{بلاک های مدل resnet18}
+	\label{tab:resnet18}
+\end{table}
+%
+%بدین ترتیب، میتوانیم تعداد فیچر های هر کدام از مراحل خواسته شده را پیدا کنیم:
+%فیچر های ابتدایی: (تا لایه maxpool قبل از لایه اول):
+%
+%64 * 64 * 112 = 802,816
+%
+%فیجرهای میانی: (تا بلاک دوم):
+%
+%128 * 28 * 28 = 100,352
+%
+%فیجرهای سطح بالا: (تا قبل از fc): 
+%
+%512 * 1* 1 = 512
+بدین ترتیب، می ‌توانیم تعداد فیچرهای هر کدام از مراحل خواسته شده را پیدا کنیم: 
+\begin{table}[h]
+	\centering
+	\begin{tabular}{|c|c|c|c|}
+		\hline
+		\textbf{نوع فیلتر} & \textbf{تنظیمات} & \textbf{تعداد فیچرها} & \textbf{جزئیات بیشتر} \\
+		\hline
+		فیلترهای ابتدایی 
+		&  $112 \times 64 \times 64$ & 802,816 & 
+		تا لایه maxpool قبل از لایه اول 
+		\\
+		\hline
+		فیلترهای میانی
+		 & $28  \times 28 \times 128$ & 100,352 & 
+		 تا بلاک دوم \\
+		\hline
+		فیلترهای سطح بالا &  $1 \times 1 \times 512$ & 512 & تا قبل از fc \\
+		\hline
+	\end{tabular}
+	\caption{ویژگی های ابتدایی، ویژگیهای میانی، ویژگی های سطح بالا}
+\end{table}
+	
+
+
+\begin{figure}[ht]
+	\centering
+	\begin{minipage}[t]{0.32\textwidth}
+		\centering
+		\includegraphics[width=\linewidth]{assets/template.png}
+		\caption{\textcolor{CustomAccent}{another caption}}
+	\end{minipage}
+	\hfill
+	\begin{minipage}[t]{0.32\textwidth}
+		\centering
+		\includegraphics[width=\linewidth]{assets/template.png}
+		\caption{\textcolor{CustomAccent}{caption new}}
+	\end{minipage}
+	\vspace{1em}
+	\hfill
+	\begin{minipage}[t]{0.32\textwidth}
+		\centering
+		\includegraphics[width=\linewidth]{assets/template.png}
+		\caption{\textcolor{CustomAccent}{caption new}}
+	\end{minipage}
+	\vspace{1em}
+\end{figure}
+
+	
+	
+\clearpage
+\section*{منابع}
+\begin{LTR}
+	\begin{latin}
+		\begin{enumerate}[left=0pt,labelsep=5pt,itemsep=0pt,parsep=0pt,topsep=0pt]
+			\item Image Denoising Algorithms: A Comparative Study of Different Filtration Approaches Used in Image Restoration.  \url{https://ieeexplore.ieee.org/abstract/document/6524379/}
+			\item Digital Image Processing By Gonzalez 4th  \url{https://elibrary.pearson.de/book/99.150005/9781292223070}
+			\item Automatic identification of noise in ice images using statistical features \url{https://www.researchgate.net/figure/Simple-pattern-classifier-to-identify-noise-types-of-Gaussian-Speckle-and -Salt-Pepper_tbl1_258714501}
+			\item medium: A Beginners Guide to Computer Vision (Part 4)- Pyramid \url{https://medium.com/analytics-vidhya/a-beginners-guide-to-computer-vision-part-4-pyramid-3640edeffb00}
+			
+			
+			\item medium: A Beginners Guide to Computer Vision (Part 4)- Pyramid \url{https://medium.com/analytics-vidhya/a-beginners-guide-to-computer-vision-part-4-pyramid-3640edeffb00}
+			
+			\item medium: A Beginners Guide to Computer Vision (Part 4)- Pyramid \url{https://medium.com/analytics-vidhya/a-beginners-guide-to-computer-vision-part-4-pyramid-3640edeffb00}
+			
+			\item medium: A Beginners Guide to Computer Vision (Part 4)- Pyramid \url{https://medium.com/analytics-vidhya/a-beginners-guide-to-computer-vision-part-4-pyramid-3640edeffb00}
+			
+		\end{enumerate}
+	\end{latin}
+\end{LTR}
+
+
+
+\end{document}
