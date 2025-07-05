@@ -142,7 +142,7 @@
 	
 	\begin{table}[h]
 		\centering
-		\begin{tabular}{|l|l|}
+		\begin{tabular}{|c|c|}
 			\hline
 			\textbf{نام و نام خانوادگی} & \textbf{شماره دانشجویی} \\
 			\hline
@@ -161,7 +161,8 @@
 	%	\end{figure}
 
 	
-\section{فاز اول: استخراج ویژگی ها از مدل resnet18}
+\section{فاز اول}
+\section*{فاز اول: استخراج ویژگی ها از مدل resnet18}
 
 در ابتدا یک بررسی بر روی مدل resnet18 که با استفاده از pytorch پیاده سازی شده، انجام می دهیم:
 
@@ -235,29 +236,134 @@
 \end{table}
 	
 
+\pagebreak
+برای هر کدام از این سه دسته فیچرها، برای این که درک بهتری از نحوه پراکندگی و corrolation آنها داشته باشیم، با استفاده از PCA و t-SNE یک نمایش کلی بدست آورده ایم. بدین منظور، فیچرهای استخراج شده از مدل resnet را به شکل زیر پلات کرده ایم:
 
-\begin{figure}[ht]
+\begin{figure}[h]
 	\centering
-	\begin{minipage}[t]{0.32\textwidth}
-		\centering
-		\includegraphics[width=\linewidth]{assets/template.png}
-		\caption{\textcolor{CustomAccent}{another caption}}
-	\end{minipage}
-	\hfill
-	\begin{minipage}[t]{0.32\textwidth}
-		\centering
-		\includegraphics[width=\linewidth]{assets/template.png}
-		\caption{\textcolor{CustomAccent}{caption new}}
-	\end{minipage}
-	\vspace{1em}
-	\hfill
-	\begin{minipage}[t]{0.32\textwidth}
-		\centering
-		\includegraphics[width=\linewidth]{assets/template.png}
-		\caption{\textcolor{CustomAccent}{caption new}}
-	\end{minipage}
-	\vspace{1em}
+	\includegraphics[scale=0.38]{assets/plot1.png}
+	\caption{\textcolor{CustomAccent}{ویژگی های ابتدایی}}
 \end{figure}
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[scale=0.38]{assets/plot2.png}
+	\caption{\textcolor{CustomAccent}{ویژگی های میانی}}
+\end{figure}
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[scale=0.38]{assets/plot3.png}
+	\caption{\textcolor{CustomAccent}{ویژگی های سطح بالا}}
+\end{figure}
+
+همانطور که مشخص است، هرچه که از ویژگی های ابتدایی به ویژگی های سطح بالا عبور می کنیم، نمایش و بازنمایی بهتری از فیچرها به دست می آید که مطابق با انتظار است. بنابراین هم برای مدل های ساده فاز اول و هم برای مدل های stacked فاز دوم، انتظار داریم که برای فیچرهای سطح بالا، به دقت بالاتری دست پیدا کنیم. 
+
+
+\pagebreak
+\section*{فاز اول: مدل های ساده}
+برای پیاده سازی مدل های ساده، 5 مدل زیر را در نظر گرفتیم:
+\begin{latin}
+\begin{itemize}
+	\item SVM
+	\item Logistic Regression
+	\item Random Forest
+	\item KNN
+	\item Decision Tree
+\end{itemize}
+\end{latin}
+
+\begin{table}[h]
+	\centering
+	\begin{latin}
+	\begin{tabular}{|l|c|c|c|c|}
+		\hline
+		 \textbf{Classifier} & \textbf{Accuracy} & \textbf{Precision} & \textbf{Recall} & \textbf{F1-Score} \\
+		\hline
+		 SVM & 0.943 & 0.944 & 0.943 & 0.943 \\
+		\hline
+		 Logistic Regression & 0.967 & 0.967 & 0.967 & 0.967 \\
+		\hline
+		 Random Forest & 0.951 & 0.951 & 0.951 & 0.951 \\
+		\hline
+		 KNN & 0.943 & 0.945 & 0.943 & 0.942 \\
+		\hline
+		 Decision Tree & 0.820 & 0.825 & 0.820 & 0.821 \\
+		\hline
+	\end{tabular}
+	\end{latin}
+	\caption{دقت طبقه بند ها به ازای فیچر های high}
+	\label{tab:classifier_performance}
+\end{table}
+
+
+\begin{table}[h]
+	\centering
+	\begin{latin}
+	\begin{tabular}{|l|c|c|c|c|}
+		\hline
+		\textbf{Classifier} & \textbf{Accuracy} & \textbf{Precision} & \textbf{Recall} & \textbf{F1-Score} \\
+		\hline
+		SVM & 0.770 & 0.778 & 0.770 & 0.773 \\
+		\hline
+		Logistic Regression & 0.803 & 0.806 & 0.803 & 0.800 \\
+		\hline
+		Random Forest & 0.607 & 0.615 & 0.607 & 0.610 \\
+		\hline
+		KNN & 0.451 & 0.478 & 0.451 & 0.454 \\
+		\hline
+		Decision Tree & 0.533 & 0.530 & 0.533 & 0.531 \\
+		\hline
+	\end{tabular}
+	\end{latin}
+	\caption{دقت طبقه بند ها به ازای فیچر های سطح متوسط}
+	\label{tab:classifier_performance_2}
+\end{table}
+
+\begin{table}[h]
+	\centering
+	\begin{latin}
+	\begin{tabular}{|l|c|c|c|c|}
+		\hline
+		\textbf{Classifier} & \textbf{Accuracy} & \textbf{Precision} & \textbf{Recall} & \textbf{F1-Score} \\
+		\hline
+		SVM & 0.607 & 0.597 & 0.607 & 0.597 \\
+		\hline
+		Logistic Regression & 0.656 & 0.652 & 0.656 & 0.636 \\
+		\hline
+		Random Forest & 0.672 & 0.673 & 0.672 & 0.660 \\
+		\hline
+		KNN & 0.500 & 0.588 & 0.500 & 0.434 \\
+		\hline
+		Decision Tree & 0.492 & 0.485 & 0.492 & 0.484 \\
+		\hline
+	\end{tabular}
+	\end{latin}
+	\caption{دقت طبقه بند ها به ازای فیچر های سطح initial}
+	\label{tab:classifier_performance_3}
+\end{table}
+%\begin{figure}[ht]
+%	\centering
+%	\begin{minipage}[t]{0.32\textwidth}
+%		\centering
+%		\includegraphics[width=\linewidth]{assets/template.png}
+%		\caption{\textcolor{CustomAccent}{another caption}}
+%	\end{minipage}
+%	\hfill
+%	\begin{minipage}[t]{0.32\textwidth}
+%		\centering
+%		\includegraphics[width=\linewidth]{assets/template.png}
+%		\caption{\textcolor{CustomAccent}{caption new}}
+%	\end{minipage}
+%	\vspace{1em}
+%	\hfill
+%	\begin{minipage}[t]{0.32\textwidth}
+%		\centering
+%		\includegraphics[width=\linewidth]{assets/template.png}
+%		\caption{\textcolor{CustomAccent}{caption new}}
+%	\end{minipage}
+%	\vspace{1em}
+%\end{figure}
 
 	
 	
