@@ -13,6 +13,12 @@
 \usepackage{hyperref}
 \usepackage{bidi} 
 \usepackage{enumitem}
+%\usepackage{polyglossia}
+%\setmainlanguage{farsi}
+%\setotherlanguage{english}
+
+
+
 
 % Colors
 \definecolor{titlepagecolor}{cmyk}{0.75,0.68,0.67,0.90} % Cover background
@@ -347,51 +353,238 @@
 
 در نهایت، به فیچر های ابتدایی میرسیم (جدول 5) که همانطور که انتظار می رود، درصد ها نیز افت زیادی میکنند. در این دسته بندی، forrest random بهترین درصد را دارد که میتوان دلیل آن را جلوگیری از اورفیت ذاتی آن دانست. نکته قابل توجه نیز افزایش دقت مدل knn است که میتوان گفت زمانی که تعداد نقاط point) (data از حدی بالا رود، عملکرد این طبقه بند نیز غیرقابل پیش بینی خواهد شد. 
 
-%\begin{figure}[ht]
-%	\centering
-%	\begin{minipage}[t]{0.32\textwidth}
-%		\centering
-%		\includegraphics[width=\linewidth]{assets/template.png}
-%		\caption{\textcolor{CustomAccent}{another caption}}
-%	\end{minipage}
-%	\hfill
-%	\begin{minipage}[t]{0.32\textwidth}
-%		\centering
-%		\includegraphics[width=\linewidth]{assets/template.png}
-%		\caption{\textcolor{CustomAccent}{caption new}}
-%	\end{minipage}
-%	\vspace{1em}
-%	\hfill
-%	\begin{minipage}[t]{0.32\textwidth}
-%		\centering
-%		\includegraphics[width=\linewidth]{assets/template.png}
-%		\caption{\textcolor{CustomAccent}{caption new}}
-%	\end{minipage}
-%	\vspace{1em}
-%\end{figure}
 
+\section{فاز دوم}
+در فاز دوم پروژه، یک مدل یادگیری پشته‌ای
+ learner stacked
+ پیاده‌سازی شد. در این مرحله، ابتدا داده‌ها با استفاده از 
+  StandardScaler
+  نرمال‌سازی شدند. سپس چهار الگوریتم طبقه‌بندی مختلف شامل SVM و درخت تصمیم
+   و  
+  Regression Logistic  و
+  Forest Random  
+   به‌عنوان مدل‌های پایه انتخاب شدند.
+   
+    هر یک از این مدل‌ها به‌صورت مستقل روی داده‌های آموزشی آموزش داده شدند و خروجی آن‌ها برای داده‌های آموزشی و آزمایشی استخراج گردید.
+خروجی مدل‌های پایه به‌صورت ویژگی‌های ورودی به یک متا-مدل داده شد. برای مدل نهایی، از رگرسیون لجستیک به‌عنوان متا-مدل استفاده شد و این مدل روی ترکیب خروجی مدل‌های پایه آموزش دید. این فرآیند برای هر سه نوع مجموعه ویژگی شامل initial-features، mid-level features و high-level features به‌صورت جداگانه انجام شد.
+برای هر یک از این سه حالت، ارزیابی مدل نهایی با استفاده از معیارهای عملکرد روی مجموعه‌های آموزش و آزمون صورت گرفت و همان طور که در ماتریس های زیر مشخص است در هر سه مورد مدل دچار overfitting شده است.
+\pagebreak
+\begin{figure}[h]
+	\centering
+	\begin{minipage}[t]{0.40\textwidth}
+		\centering
+		\includegraphics[width=\linewidth]{assets/plot4.png}
+		\caption{\textcolor{CustomAccent}{مدل فیچر های ابتدایی: دقت آموزش }}
+	\end{minipage}
+	\hfill
+	\begin{minipage}[t]{0.40\textwidth}
+		\centering
+		\includegraphics[width=\linewidth]{assets/plot5.png}
+		\caption{\textcolor{CustomAccent}{مدل فیچر های ابتدایی: دقت تست}}
+	\end{minipage}
+
+	\hfill
+\end{figure}
+
+\begin{figure}[h]
+	\centering
+	\begin{minipage}[t]{0.40\textwidth}
+		\centering
+		\includegraphics[width=\linewidth]{assets/plot6.png}
+		\caption{\textcolor{CustomAccent}{مدل فیچر های میانی: دقت آموزش }}
+	\end{minipage}
+	\hfill
+	\begin{minipage}[t]{0.40\textwidth}
+		\centering
+		\includegraphics[width=\linewidth]{assets/plot7.png}
+		\caption{\textcolor{CustomAccent}{مدل فیچر های میانی: دقت تست}}
+	\end{minipage}
+
+	\hfill
+\end{figure}
 	
 	
-\clearpage
-\section*{منابع}
-\begin{LTR}
+\begin{figure}[h]
+	\centering
+	\begin{minipage}[t]{0.40\textwidth}
+		\centering
+		\includegraphics[width=\linewidth]{assets/plot8.png}
+		\caption{\textcolor{CustomAccent}{مدل فیچر های بالا: دقت آموزش }}
+	\end{minipage}
+	\hfill
+	\begin{minipage}[t]{0.40\textwidth}
+		\centering
+		\includegraphics[width=\linewidth]{assets/plot9.png}
+		\caption{\textcolor{CustomAccent}{مدل فیچر های بالا: دقت تست}}
+	\end{minipage}
+
+	\hfill
+\end{figure}
+
+
+\pagebreak
+
+\section*{جلوگیری از اورفیت}
+برای جلوگیری از overfitting در مدل پشته‌ای، روش پیاده‌سازی مدل بهینه‌سازی شد تا فرآیند یادگیری سطح دوم (Meta-Learner) اطلاعات نشت‌یافته از داده‌های آموزش را دریافت نکند. برای این منظور، از تکنیک
+ Validation Cross K-Fold   
+ روی داده‌های آموزشی استفاده شد. در این رویکرد، هر مدل پایه به‌جای آموزش روی کل داده و پیش ‌بینی روی همان داده، در هر تکرار روی K−1 بخش آموزش دید و روی بخش باقی‌مانده (validation) پیش ‌بینی انجام داد. خروجی‌های پیش‌بینی‌شده بر روی validationها به‌عنوان ویژگی برای آموزش متا-مدل استفاده شدند.
+ 
+برای داده‌های آزمایشی نیز، در هر تکرار از K-Fold، مدل آموزش‌دیده بر روی fold مربوطه پیش‌بینی انجام داد و نهایتاً با میانگین‌گیری از نتایج تمام تکرارها، خروجی نهایی برای test تولید شد. در این ساختار، مدل‌های پایه شامل SVM، درخت تصمیم، رگرسیون لجستیک و
+forest Random 
+ بودند. متا-مدل نیز همانند قبل یک رگرسیون لجستیک بود.
+
+در این مرحله نیز فرآیند فوق برای هر سه مجموعه ویژگی شامل initial features، mid-level features و high-level features اجرا شد. با این تفاوت که برای مجموعه initial features به‌دلیل بالا بودن تعداد ویژگی‌ها و محدودیت‌های پردازشی، مقدار n\_splitsn به ۲ کاهش یافت تا زمان آموزش کاهش یابد. اما برای دو مجموعه دیگر، مقدار پیش‌فرض n\_splits=5 حفظ شد.
+در پایان، عملکرد مدل نهایی برای هر سه نوع ویژگی، با استفاده از معیارهای ارزیابی روی مجموعه‌های آموزش (Train) و آزمون (Test) گزارش شد و مشاهده شد که این بار مدل ها دچار overfitting نشده اند.
+
+\pagebreak
+\begin{figure}[h]
+	\centering
+	\begin{minipage}[t]{0.40\textwidth}
+		\centering
+		\includegraphics[width=\linewidth]{assets/plot10.png}
+		\caption{\textcolor{CustomAccent}{مدل فیچر های ابتدایی با جلوگیری از اورفیت: دقت آموزش }}
+	\end{minipage}
+	\hfill
+	\begin{minipage}[t]{0.40\textwidth}
+		\centering
+		\includegraphics[width=\linewidth]{assets/plot11.png}
+		\caption{\textcolor{CustomAccent}{مدل فیچر های ابتدایی با جلوگیری از اورفیت: دقت تست}}
+	\end{minipage}
+	\hfill
+\end{figure}
+
+
+\begin{figure}[h]
+	\centering
+	\begin{minipage}[t]{0.40\textwidth}
+		\centering
+		\includegraphics[width=\linewidth]{assets/plot12.png}
+		\caption{\textcolor{CustomAccent}{مدل فیچر های میانی با جلوگیری از اورفیت: دقت آموزش }}
+	\end{minipage}
+	\hfill
+	\begin{minipage}[t]{0.40\textwidth}
+		\centering
+		\includegraphics[width=\linewidth]{assets/plot13.png}
+		\caption{\textcolor{CustomAccent}{مدل فیچر های میانی با جلوگیری از اورفیت: دقت تست}}
+	\end{minipage}
+	\hfill
+\end{figure}
+
+
+\begin{figure}[h]
+	\centering
+	\begin{minipage}[t]{0.40\textwidth}
+		\centering
+		\includegraphics[width=\linewidth]{assets/plot14.png}
+		\caption{\textcolor{CustomAccent}{مدل فیچر های بالا با جلوگیری از اورفیت: دقت آموزش }}
+	\end{minipage}
+	\hfill
+	\begin{minipage}[t]{0.40\textwidth}
+		\centering
+		\includegraphics[width=\linewidth]{assets/plot15.png}
+		\caption{\textcolor{CustomAccent}{مدل فیچر های بالا با جلوگیری از اورفیت: دقت تست}}
+	\end{minipage}
+	\hfill
+\end{figure}
+\pagebreak
+
+\section*{tuning hyperparameter}
+
+برای انجام هایپرپارامتر تیونینگ، یک لیست به شرح زیر ساخته شد که جایگشت میان حالات آن، در مجموع 128 تا configuration را می سازد:
+
+\begin{table}[h]
 	\begin{latin}
-		\begin{enumerate}[left=0pt,labelsep=5pt,itemsep=0pt,parsep=0pt,topsep=0pt]
-			\item Image Denoising Algorithms: A Comparative Study of Different Filtration Approaches Used in Image Restoration.  \url{https://ieeexplore.ieee.org/abstract/document/6524379/}
-			\item Digital Image Processing By Gonzalez 4th  \url{https://elibrary.pearson.de/book/99.150005/9781292223070}
-			\item Automatic identification of noise in ice images using statistical features \url{https://www.researchgate.net/figure/Simple-pattern-classifier-to-identify-noise-types-of-Gaussian-Speckle-and -Salt-Pepper_tbl1_258714501}
-			\item medium: A Beginners Guide to Computer Vision (Part 4)- Pyramid \url{https://medium.com/analytics-vidhya/a-beginners-guide-to-computer-vision-part-4-pyramid-3640edeffb00}
-			
-			
-			\item medium: A Beginners Guide to Computer Vision (Part 4)- Pyramid \url{https://medium.com/analytics-vidhya/a-beginners-guide-to-computer-vision-part-4-pyramid-3640edeffb00}
-			
-			\item medium: A Beginners Guide to Computer Vision (Part 4)- Pyramid \url{https://medium.com/analytics-vidhya/a-beginners-guide-to-computer-vision-part-4-pyramid-3640edeffb00}
-			
-			\item medium: A Beginners Guide to Computer Vision (Part 4)- Pyramid \url{https://medium.com/analytics-vidhya/a-beginners-guide-to-computer-vision-part-4-pyramid-3640edeffb00}
-			
-		\end{enumerate}
+	\centering
+	\begin{tabular}{|l|l|l|}
+		\hline
+		\textbf{Algorithm} & \textbf{Parameter} & \textbf{Value} \\
+		\hline
+		SVM & C & [0.1, 1.0] \\
+		\hline
+		SVM & kernel & ["rbf", "linear"] \\
+		\hline
+		DecisionTree & max\_depth & [3, 5] \\
+		\hline
+		DecisionTree & min\_samples\_split & [2, 4] \\
+		\hline
+		LogisticRegression & C & [0.1, 1.0] \\
+		\hline
+		LogisticRegression & penalty & ["l2"] \\
+		\hline
+		RandomForest & n\_estimators & [50, 100] \\
+		\hline
+		RandomForest & max\_depth & [4, 6] \\
+		\hline
+	\end{tabular}
+	\caption{Machine Learning Algorithm Configurations}
 	\end{latin}
-\end{LTR}
+	\label{tab:ml_configs}
+\end{table}
+
+از میان موارد اشاره شده، به شکل رندوم سرچ، انتخاب شد و برای آنها عملیات train , test انجام شد. برای فیچر های سطح بالا، 60 عدد کانفیگوریشن انتخاب و تست شد (چون فیچر های سطح بالا به دلیل کم بودن تعدادشان با محدودیت پردازشی رو به رو نمیشدند.) و برای فیچر های سطح میانی، 10 عدد کانفیگوریشن تست شد و همچنین، برای فیچرهای سطح پایین، مدلمان را هایپرپارامتر تیونینگ نکردیم؛ دلیل موجهی نیز برای آن داشتیم: تعداد بسیار زیاد فیچر ها، عملیات یادگیری را بسیار طولانی (حتی با استفاده از گوگل کولب) می کرد؛ همچنین، اصولا این نوع از مدل های یادگیری ماشین ساده، توانایی اجرا بر روی gpu نیز نداشتند.
+
+
+\pagebreak
+نتیجه این تیونینگ، این شد که هر دو مدل، به درصد های بالاتری رسیدند:
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[scale=0.55]{assets/plot16.png}
+	\caption{\textcolor{CustomAccent}{ویژگی های سطح بالا با تیونینگ}}
+\end{figure}
+برای ویژگی های سطح بالا، دقت از 96 به $97.5$ درصد رسید.
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[scale=0.55]{assets/plot17.png}
+	\caption{\textcolor{CustomAccent}{ ویژگی های میانی با تیونینگ}}
+\end{figure}
+برای ویژگی های میانی، acc از 76 به 82 درصد رسید.
+(
+شایان ذکر است، تمامی شاخص های آماری دیگر نظیر f1-score و غیره در پروژه به شکل خوانایی ذخیره شده است و برای جلوگیری از تکرار مکررات، از نوشته شدن مجدد آنها در این بخش خودداری می شود.)
+
+\pagebreak
+
+\section*{ارزیابی مدل Stacked و مقایسه با نتایج فاز اول}
+
+مدل‌های پشته ای
+ به‌عنوان راهکاری برای افزایش دقت طبقه‌بندی در این پروژه مورد استفاده قرار گرفتند. هدف از این فاز، بررسی این بود که آیا ترکیب چندین مدل یادگیری ماشین می‌تواند نسبت به مدل‌های منفرد عملکرد بهتری در سطوح مختلف ویژگی داشته باشد یا خیر. برای این منظور در سه سطح از ویژگی‌های استخراج‌شده مدل‌های Stacked ایجاد شده‌اند و با نتایج حاصل از فاز اول مقایسه شده‌اند. همانطور که اشاره شد، در این مرحله آن است که هایپرپارامتر تونینگ تنها برای نسخه‌های mid و high مدل‌های Stacked انجام شده و نسخه initial و مدل‌های منفرد فاز اول بدون tuning اجرا شده‌اند.
+ 
+ 
+در سطح high-level features مدل Stacked توانسته است بهترین عملکرد را از خود نشان دهد. دقت این مدل به عدد$ 0.9754$ رسیده که نسبت به بهترین مدل منفرد در فاز اول، یعنی 
+ Regression 
+ Logistic
+ با دقت$ 0.967،$ بهبود قابل توجهی داشته است. این بهبود نه‌تنها در دقت بلکه در تمام معیارهای Precision، Recall و F1-score نیز دیده می‌شود. دلیل اصلی این افزایش عملکرد را می‌توان در دو عامل دانست: اول آنکه استفاده از Stacked باعث شد که ضعف‌ها و خطاهای مدل‌های منفرد تا حد زیادی جبران شود و عملکرد کلی سیستم با ترکیب دیدگاه‌های متنوع مدل‌ها بهبود یابد. این ترکیب به‌ویژه در ویژگی‌های سطح بالا، منجر به تصمیم‌گیری دقیق‌تر و پایدارتر نسبت به استفاده‌ی تنها از یک مدل شد. دوم تنظیم دقیق ابرپارامترهای مدل‌های پایه در ساختار Stacked باعث شده که مدل نهایی از نظر تعمیم‌پذیری بهبود یابد و بتواند الگوهای پیچیده‌تری را از داده‌ها استخراج کند.
+ 
+ 
+درmid-level features نیز مدل ترکیبی عملکرد بهتری نسبت به مدل‌های منفرد داشته است. دقت مدل Stacked در این سطح برابر با$ 0.8197$ گزارش شده در حالی که بهترین مدل فاز اول در همین سطح دقتی معادل$ 0.803$ داشته است. استفاده از مدل Stacked باعث شد که ضعف‌های مدل‌های پایه تا حدودی جبران شده و عملکرد بهتری نسبت به مدل‌های منفرد به دست آید. همچنین استفاده از ‫‪tuning‬‬ در این عملکرد بهتر بسیار تاثیر گذار بوده است.
+
+اما در initial-level features برخلاف دو سطح قبل، مدل Stacked عملکرد ضعیف‌تری نسبت به بهترین مدل فاز اول داشته است. دقت این مدل برابر با$ 0.6475$ گزارش شده، در حالی که بهترین عملکرد در فاز اول 
+ Forest
+Random
+ در همین سطح برابر با$ 0.672$ بوده است. این افت عملکرد را می‌توان به دلیل آن دانست که در این سطح، برای مدل Stacked هیچ‌گونه تنظیم ابرپارامتر انجام نشده است و همین باعث شده که مدل از ظرفیت کامل خود برای یادگیری استفاده نکند. این مسأله اهمیت تنظیم دقیق مدل‌ها را در معماری‌های ترکیبی به‌خوبی نشان می‌دهد.
+در جمع‌بندی می‌توان گفت استفاده از معماری Stacked به‌ویژه در کنار ویژگی‌های سطح بالا و با انجام Tuning مناسب، می‌تواند به‌طور مؤثری دقت طبقه‌بندی را نسبت به مدل‌های منفرد بهبود بخشد. این نتایج نشان می‌دهند که اهمیت تنظیم دقیق هایپرپارامترها و Tuning در کنار استفاده از Stacking نقشی کلیدی در بهبود عملکرد سیستم طبقه‌بندی ایفا می‌کند. این مسئله همچنین تأکید می‌کند که کیفیت ویژگی‌های استخراج‌شده و تنظیمات داخلی مدل‌ها نقش تعیین‌کننده‌ای در موفقیت یک سیستم طبقه‌بندی دارند.
+
+%
+%\section*{منابع}
+%\begin{LTR}
+%	\begin{latin}
+%		\begin{enumerate}[left=0pt,labelsep=5pt,itemsep=0pt,parsep=0pt,topsep=0pt]
+%			\item Image Denoising Algorithms: A Comparative Study of Different Filtration Approaches Used in Image Restoration.  \url{https://ieeexplore.ieee.org/abstract/document/6524379/}
+%			\item Digital Image Processing By Gonzalez 4th  \url{https://elibrary.pearson.de/book/99.150005/9781292223070}
+%			\item Automatic identification of noise in ice images using statistical features \url{https://www.researchgate.net/figure/Simple-pattern-classifier-to-identify-noise-types-of-Gaussian-Speckle-and -Salt-Pepper_tbl1_258714501}
+%			\item medium: A Beginners Guide to Computer Vision (Part 4)- Pyramid \url{https://medium.com/analytics-vidhya/a-beginners-guide-to-computer-vision-part-4-pyramid-3640edeffb00}
+%			
+%			
+%			\item medium: A Beginners Guide to Computer Vision (Part 4)- Pyramid \url{https://medium.com/analytics-vidhya/a-beginners-guide-to-computer-vision-part-4-pyramid-3640edeffb00}
+%			
+%			\item medium: A Beginners Guide to Computer Vision (Part 4)- Pyramid \url{https://medium.com/analytics-vidhya/a-beginners-guide-to-computer-vision-part-4-pyramid-3640edeffb00}
+%			
+%			\item medium: A Beginners Guide to Computer Vision (Part 4)- Pyramid \url{https://medium.com/analytics-vidhya/a-beginners-guide-to-computer-vision-part-4-pyramid-3640edeffb00}
+%			
+%		\end{enumerate}
+%	\end{latin}
+%\end{LTR}
 
 
 
